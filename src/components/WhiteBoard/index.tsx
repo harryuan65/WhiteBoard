@@ -1,10 +1,4 @@
-import React, {
-  useState,
-  useRef,
-  useEffect,
-  useCallback,
-  useLayoutEffect,
-} from 'react';
+import React, { useState, useRef, useLayoutEffect } from 'react';
 
 const Whiteboard: React.FC = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -36,6 +30,7 @@ const Whiteboard: React.FC = () => {
     }
   };
 
+  // V1
   const startDrawing = (e: MouseEvent) => {
     console.log('start');
 
@@ -44,48 +39,65 @@ const Whiteboard: React.FC = () => {
     setLastY(e.offsetY);
   };
 
-  const draw = (e: MouseEvent) => {
-    if (!isDrawing || !canvasRef.current) return;
-
-    const ctx = canvasRef.current.getContext('2d')!;
-    ctx.beginPath();
-    ctx.moveTo(lastX, lastY);
-    ctx.lineTo(e.offsetX, e.offsetY);
-    ctx.stroke();
-    setLastX(e.offsetX);
-    setLastY(e.offsetY);
-    setStroked(
-      (prev) =>
-        prev + Math.sqrt((e.offsetX - lastX) ** 2 + (e.offsetY - lastY) ** 2)
-    );
+  const startDrawingByKey = (e: KeyboardEvent) => {
+    if (e.key == 'z') {
+      setIsDrawing(true);
+    }
   };
 
-  const finishDrawing = (e: MouseEvent) => {
-    if (!isDrawing) return;
-    console.log('finishing');
+  const draw = (e: MouseEvent) => {
+    if (isDrawing && canvasRef.current) {
+      const ctx = canvasRef.current.getContext('2d')!;
+      ctx.beginPath();
+      ctx.moveTo(lastX, lastY);
+      ctx.lineTo(e.offsetX, e.offsetY);
+      ctx.stroke();
+      setStroked(
+        (prev) =>
+          prev + Math.sqrt((e.offsetX - lastX) ** 2 + (e.offsetY - lastY) ** 2)
+      );
+    }
+
+    setLastX(e.offsetX);
+    setLastY(e.offsetY);
+  };
+
+  const finishDrawing = (e: MouseEvent | KeyboardEvent) => {
     setIsDrawing(false);
-    setHistory([...history, canvasRef.current!.toDataURL()]);
+
+    if (stroked > 0) setHistory([...history, canvasRef.current!.toDataURL()]);
+
     setStroked(0);
-    console.log(history);
-    console.log(stroked);
   };
 
   useLayoutEffect(() => {
     if (canvasRef.current) {
+      canvasRef.current.focus();
       const canvas = canvasRef.current;
       const ctx = canvas.getContext('2d')!;
       ctx.strokeStyle = '#000000';
       ctx.lineWidth = 3;
-      console.log('adding listeners');
-      canvas.addEventListener('mousedown', startDrawing);
+
+      // V1 Use mousedown
+      // canvas.addEventListener('mousedown', startDrawing);
+      // canvas.addEventListener('mouseup', finishDrawing);
+      // or Use key
+      canvas.addEventListener('keydown', startDrawingByKey);
+      canvas.addEventListener('keyup', finishDrawing);
+
       canvas.addEventListener('mousemove', draw);
-      canvas.addEventListener('mouseup', finishDrawing);
       canvas.addEventListener('mouseout', finishDrawing);
 
       return () => {
-        canvas.removeEventListener('mousedown', startDrawing);
+        // V1
+        // canvas.removeEventListener('mousedown', startDrawing);
+        // canvas.removeEventListener('mouseup', finishDrawing);
+
+        // or Use key
+        canvas.removeEventListener('keydown', startDrawingByKey);
+        canvas.removeEventListener('keyup', finishDrawing);
+
         canvas.removeEventListener('mousemove', draw);
-        canvas.removeEventListener('mouseup', finishDrawing);
         canvas.removeEventListener('mouseout', finishDrawing);
       };
     }
@@ -100,9 +112,25 @@ const Whiteboard: React.FC = () => {
       >
         Undo
       </button>
-      {history.length}
+      <table>
+        <thead>
+          <tr>
+            <th>histories</th>
+            <th>isDrawing</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>{history.length}</td>
+            <td>{isDrawing ? 'true' : 'false'}</td>
+          </tr>
+        </tbody>
+      </table>
+      {/* autoFocus + tabIndex to allow focus */}
       <canvas
         ref={canvasRef}
+        tabIndex={1}
+        autoFocus
         style={{
           backgroundColor: 'white',
           display: 'block',
