@@ -1,8 +1,16 @@
-import React, { useState, useRef, useLayoutEffect } from 'react';
+import React, { useState, useRef, useLayoutEffect, ChangeEvent } from 'react';
 import styles from './styles.module.css';
+
+const MODES = {
+  Mouse: 'Mouse',
+  KeyBoard: 'KeyBoard',
+} as const;
+
+type DrawMode = typeof MODES[keyof typeof MODES];
 
 const Whiteboard: React.FC = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const [mode, setMode] = useState<DrawMode>('Mouse');
   const [isDrawing, setIsDrawing] = useState(false);
   const [lastX, setLastX] = useState(0);
   const [lastY, setLastY] = useState(0);
@@ -37,13 +45,16 @@ const Whiteboard: React.FC = () => {
     }
   };
 
+  const updateMode = (e: ChangeEvent) => {
+    const value = (e.target as HTMLSelectElement).value as DrawMode;
+    setMode(value);
+  };
+
   // V1
   const startDrawing = (e: MouseEvent) => {
     console.log('start');
 
     setIsDrawing(true);
-    setLastX(e.offsetX);
-    setLastY(e.offsetY);
   };
 
   const startDrawingByKey = (e: KeyboardEvent) => {
@@ -85,34 +96,49 @@ const Whiteboard: React.FC = () => {
       ctx.strokeStyle = '#000000';
       ctx.lineWidth = 3;
 
-      // V1 Use mousedown
-      // canvas.addEventListener('mousedown', startDrawing);
-      // canvas.addEventListener('mouseup', finishDrawing);
-      // or Use key
-      canvas.addEventListener('keydown', startDrawingByKey);
-      canvas.addEventListener('keyup', finishDrawing);
+      switch (mode) {
+        case MODES.Mouse:
+          canvas.addEventListener('mousedown', startDrawing);
+          canvas.addEventListener('mouseup', finishDrawing);
+          break;
+        case MODES.KeyBoard:
+          canvas.addEventListener('keydown', startDrawingByKey);
+          canvas.addEventListener('keyup', finishDrawing);
+          break;
+      }
 
       canvas.addEventListener('mousemove', draw);
       canvas.addEventListener('mouseout', finishDrawing);
 
       return () => {
-        // V1
-        // canvas.removeEventListener('mousedown', startDrawing);
-        // canvas.removeEventListener('mouseup', finishDrawing);
-
-        // or Use key
-        canvas.removeEventListener('keydown', startDrawingByKey);
-        canvas.removeEventListener('keyup', finishDrawing);
+        switch (mode) {
+          case MODES.Mouse:
+            canvas.removeEventListener('mousedown', startDrawing);
+            canvas.removeEventListener('mouseup', finishDrawing);
+            break;
+          case MODES.KeyBoard:
+            canvas.removeEventListener('keydown', startDrawingByKey);
+            canvas.removeEventListener('keyup', finishDrawing);
+            break;
+        }
 
         canvas.removeEventListener('mousemove', draw);
         canvas.removeEventListener('mouseout', finishDrawing);
       };
     }
-  }, [canvasRef.current, isDrawing, lastX, lastY, history]);
+  }, [mode, canvasRef.current, isDrawing, lastX, lastY, history]);
 
   return (
     <>
       <div className={styles.ToolBar}>
+        <div className={styles.ModeSelectWrap}>
+          <span>Draw Mode</span>
+          <select className={styles.ModeSelect} onChange={updateMode}>
+            <option value={MODES.Mouse}>Mouse</option>
+            <option value={MODES.KeyBoard}>KeyBoard</option>
+          </select>
+        </div>
+
         <button onClick={handleUndo}>Undo</button>
         <button onClick={handleReset}>Reset</button>
       </div>
