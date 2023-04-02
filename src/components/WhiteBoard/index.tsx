@@ -18,7 +18,7 @@ const DefaultStrokeColors = [
 
 const Whiteboard: React.FC = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const [mode, setMode] = useState<DrawMode>('KeyBoard');
+  const [mode, setMode] = useState<DrawMode>('Mouse');
   const [drawKey, setDrawKey] = useState<KeyType>('z');
   const [isDrawing, setIsDrawing] = useState(false);
   const [lastX, setLastX] = useState(0);
