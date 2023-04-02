@@ -1,4 +1,5 @@
 import React, { useState, useRef, useLayoutEffect, ChangeEvent } from 'react';
+import SelectField from '../SelectField';
 import styles from './styles.module.css';
 
 const MODES = {
@@ -170,27 +171,23 @@ const Whiteboard: React.FC = () => {
     }
   }, [drawKey, mode, canvasRef.current, isDrawing, lastX, lastY, history]);
 
-  const selectDrawKey = mode == MODES.KeyBoard && (
-    <select
-      className={styles.ModeSelect}
-      onChange={updateDrawKey}
-      defaultValue={drawKey}
-    >
-      {Keys.map((key) => (
-        <option value={key}>{key.toUpperCase()}</option>
-      ))}
-    </select>
-  );
   return (
     <>
       <div className={styles.ToolBar}>
         <div className={styles.ModeSelectWrap}>
           <span>Draw Mode</span>
-          <select className={styles.ModeSelect} onChange={updateMode}>
-            <option value={MODES.Mouse}>Mouse</option>
-            <option value={MODES.KeyBoard}>KeyBoard</option>
-          </select>
-          {selectDrawKey}
+          <SelectField
+            onChange={updateMode}
+            values={[MODES.Mouse, MODES.KeyBoard]}
+            defaultValue={MODES.Mouse}
+          />
+          {mode == MODES.KeyBoard && (
+            <SelectField
+              onChange={updateDrawKey}
+              values={Keys}
+              defaultValue={drawKey}
+            />
+          )}
         </div>
 
         <button onClick={handleUndo}>Undo</button>
