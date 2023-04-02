@@ -2,51 +2,9 @@ import React, { useState, useRef, useLayoutEffect, ChangeEvent } from 'react';
 import Button from '../Button';
 import SelectField from '../SelectField';
 import Tool from '../Tool';
+import { MODES, Keys } from '../constants';
+import { DrawMode, KeyType } from '../types';
 import styles from './styles.module.css';
-
-const MODES = {
-  Mouse: 'Mouse',
-  KeyBoard: 'KeyBoard',
-} as const;
-
-const Keys = [
-  'q',
-  'w',
-  'e',
-  'r',
-  't',
-  'y',
-  'u',
-  'i',
-  'o',
-  'p',
-  'a',
-  's',
-  'd',
-  'f',
-  'g',
-  'h',
-  'j',
-  'k',
-  'l',
-  'z',
-  'x',
-  'c',
-  'v',
-  'b',
-  'n',
-  'm',
-] as const;
-
-type ElementType<T extends ReadonlyArray<unknown>> = T extends ReadonlyArray<
-  infer ElementType
->
-  ? ElementType
-  : never;
-
-type KeyType = ElementType<typeof Keys>; // this is correctly inferred as literal "A" | "B"
-
-type DrawMode = typeof MODES[keyof typeof MODES];
 
 const Whiteboard: React.FC = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
