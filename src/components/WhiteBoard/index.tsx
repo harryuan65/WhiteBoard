@@ -6,6 +6,16 @@ import { MODES, Keys } from '../constants';
 import { DrawMode, KeyType } from '../types';
 import styles from './styles.module.css';
 
+const DefaultStrokeColors = [
+  '#000000',
+  '#ffffff',
+  '#D92027',
+  '#3a9505',
+  '#002c59',
+  '#F49D1A',
+  '#5f14eb',
+];
+
 const Whiteboard: React.FC = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [mode, setMode] = useState<DrawMode>('KeyBoard');
@@ -171,6 +181,16 @@ const Whiteboard: React.FC = () => {
           />
         </Tool>
         <Tool title="Stroke Color">
+          {DefaultStrokeColors.map((color) => (
+            <span
+              className={[
+                styles.DefaultStrokeColorOption,
+                strokeStyle === color && styles.selected,
+              ].join(' ')}
+              style={{ '--color': color } as React.CSSProperties}
+              onClick={() => setStrokeStyle(color)}
+            ></span>
+          ))}
           <input
             type="color"
             value={strokeStyle}

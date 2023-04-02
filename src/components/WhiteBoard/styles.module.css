@@ -4,3 +4,16 @@
   position: fixed;
   top: 0;
 }
+
+.DefaultStrokeColorOption {
+  display: inline-block;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  border: 1px solid rgb(199, 199, 199);
+  background-color: var(--color);
+}
+
+.DefaultStrokeColorOption.selected {
+  border: 2px solid rgb(199, 199, 199);
+}
