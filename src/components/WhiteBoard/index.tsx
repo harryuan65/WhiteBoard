@@ -49,7 +49,7 @@ type DrawMode = typeof MODES[keyof typeof MODES];
 
 const Whiteboard: React.FC = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const [mode, setMode] = useState<DrawMode>('Mouse');
+  const [mode, setMode] = useState<DrawMode>('KeyBoard');
   const [drawKey, setDrawKey] = useState<KeyType>('z');
   const [isDrawing, setIsDrawing] = useState(false);
   const [lastX, setLastX] = useState(0);
@@ -180,7 +180,7 @@ const Whiteboard: React.FC = () => {
           <SelectField
             onChange={updateMode}
             values={[MODES.Mouse, MODES.KeyBoard]}
-            defaultValue={MODES.KeyBoard}
+            defaultValue={mode}
           />
           {mode == MODES.KeyBoard && (
             <SelectField
