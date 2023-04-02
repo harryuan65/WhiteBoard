@@ -1,4 +1,5 @@
 import React, { useState, useRef, useLayoutEffect } from 'react';
+import styles from './styles.module.css';
 
 const Whiteboard: React.FC = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -111,18 +112,10 @@ const Whiteboard: React.FC = () => {
 
   return (
     <>
-      <table>
-        <tbody>
-          <tr>
-            <td>
-              <button onClick={handleUndo}>Undo</button>
-            </td>
-            <td>
-              <button onClick={handleReset}>Reset</button>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+      <div className={styles.ToolBar}>
+        <button onClick={handleUndo}>Undo</button>
+        <button onClick={handleReset}>Reset</button>
+      </div>
       {/* autoFocus + tabIndex to allow focus */}
       <canvas
         ref={canvasRef}

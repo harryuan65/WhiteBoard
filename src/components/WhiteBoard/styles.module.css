@@ -1,0 +1,6 @@
+.ToolBar {
+  display: flex;
+  align-items: center;
+  position: fixed;
+  top: 0;
+}
