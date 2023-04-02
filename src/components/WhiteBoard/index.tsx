@@ -179,7 +179,7 @@ const Whiteboard: React.FC = () => {
           <SelectField
             onChange={updateMode}
             values={[MODES.Mouse, MODES.KeyBoard]}
-            defaultValue={MODES.Mouse}
+            defaultValue={MODES.KeyBoard}
           />
           {mode == MODES.KeyBoard && (
             <SelectField
