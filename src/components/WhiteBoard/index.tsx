@@ -1,6 +1,7 @@
 import React, { useState, useRef, useLayoutEffect, ChangeEvent } from 'react';
 import Button from '../Button';
 import SelectField from '../SelectField';
+import Tool from '../Tool';
 import styles from './styles.module.css';
 
 const MODES = {
@@ -188,8 +189,7 @@ const Whiteboard: React.FC = () => {
   return (
     <>
       <div className={styles.ToolBar}>
-        <div className={styles.ModeSelectWrap}>
-          <span>Draw Mode</span>
+        <Tool title="Draw Mode">
           <SelectField
             onChange={updateMode}
             values={[MODES.Mouse, MODES.KeyBoard]}
@@ -202,9 +202,8 @@ const Whiteboard: React.FC = () => {
               defaultValue={drawKey}
             />
           )}
-        </div>
-        <div className={styles.ModeSelectWrap}>
-          <span>Width: {strokeWidth}</span>
+        </Tool>
+        <Tool title={`Width: ${strokeWidth}`}>
           <input
             type="range"
             value={strokeWidth}
@@ -212,15 +211,14 @@ const Whiteboard: React.FC = () => {
             max={20}
             onChange={updateStrokeWidth}
           />
-        </div>
-        <div className={styles.ModeSelectWrap}>
-          <span>Stroke Color: </span>
+        </Tool>
+        <Tool title="Stroke Color">
           <input
             type="color"
             value={strokeStyle}
             onChange={updateStrokeStyle}
           />
-        </div>
+        </Tool>
         <Button onClick={handleUndo}>Undo</Button>
         <Button onClick={handleReset}>Reset</Button>
       </div>
