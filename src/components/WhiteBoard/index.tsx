@@ -1,4 +1,5 @@
 import React, { useState, useRef, useLayoutEffect, ChangeEvent } from 'react';
+import Button from '../Button';
 import SelectField from '../SelectField';
 import styles from './styles.module.css';
 
@@ -190,8 +191,8 @@ const Whiteboard: React.FC = () => {
           )}
         </div>
 
-        <button onClick={handleUndo}>Undo</button>
-        <button onClick={handleReset}>Reset</button>
+        <Button onClick={handleUndo}>Undo</Button>
+        <Button onClick={handleReset}>Reset</Button>
       </div>
       {/* autoFocus + tabIndex to allow focus */}
       <canvas
