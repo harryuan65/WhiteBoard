@@ -55,6 +55,8 @@ const Whiteboard: React.FC = () => {
   const [lastX, setLastX] = useState(0);
   const [lastY, setLastY] = useState(0);
   const [stroked, setStroked] = useState(0);
+  const [strokeWidth, setStrokeWidth] = useState<number>(3);
+  const [strokeStyle, setStrokeStyle] = useState<string>('000000');
   const [history, setHistory] = useState<string[]>([]);
 
   const handleReset = () => {
@@ -85,6 +87,11 @@ const Whiteboard: React.FC = () => {
     }
   };
 
+  const updateStrokeWidth = (e: ChangeEvent) => {
+    const value = (e.target as HTMLInputElement).value;
+    setStrokeWidth(Number(value));
+  };
+
   const updateMode = (e: ChangeEvent) => {
     const value = (e.target as HTMLSelectElement).value as DrawMode;
     setMode(value);
@@ -111,6 +118,9 @@ const Whiteboard: React.FC = () => {
     if (isDrawing && canvasRef.current) {
       const ctx = canvasRef.current.getContext('2d')!;
       ctx.beginPath();
+      ctx.lineWidth = strokeWidth;
+      ctx.strokeStyle = strokeStyle;
+      ctx.lineCap = 'round';
       ctx.moveTo(lastX, lastY);
       ctx.lineTo(e.offsetX, e.offsetY);
       ctx.stroke();
@@ -137,8 +147,6 @@ const Whiteboard: React.FC = () => {
       canvasRef.current.focus();
       const canvas = canvasRef.current;
       const ctx = canvas.getContext('2d')!;
-      ctx.strokeStyle = '#000000';
-      ctx.lineWidth = 3;
 
       switch (mode) {
         case MODES.Mouse:
@@ -190,7 +198,16 @@ const Whiteboard: React.FC = () => {
             />
           )}
         </div>
-
+        <div className={styles.ModeSelectWrap}>
+          <span>Width: {strokeWidth}</span>
+          <input
+            type="range"
+            value={strokeWidth}
+            min={3}
+            max={20}
+            onChange={updateStrokeWidth}
+          />
+        </div>
         <Button onClick={handleUndo}>Undo</Button>
         <Button onClick={handleReset}>Reset</Button>
       </div>
