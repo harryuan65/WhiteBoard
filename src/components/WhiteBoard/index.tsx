@@ -6,11 +6,49 @@ const MODES = {
   KeyBoard: 'KeyBoard',
 } as const;
 
+const Keys = [
+  'q',
+  'w',
+  'e',
+  'r',
+  't',
+  'y',
+  'u',
+  'i',
+  'o',
+  'p',
+  'a',
+  's',
+  'd',
+  'f',
+  'g',
+  'h',
+  'j',
+  'k',
+  'l',
+  'z',
+  'x',
+  'c',
+  'v',
+  'b',
+  'n',
+  'm',
+] as const;
+
+type ElementType<T extends ReadonlyArray<unknown>> = T extends ReadonlyArray<
+  infer ElementType
+>
+  ? ElementType
+  : never;
+
+type KeyType = ElementType<typeof Keys>; // this is correctly inferred as literal "A" | "B"
+
 type DrawMode = typeof MODES[keyof typeof MODES];
 
 const Whiteboard: React.FC = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [mode, setMode] = useState<DrawMode>('Mouse');
+  const [drawKey, setDrawKey] = useState<KeyType>('z');
   const [isDrawing, setIsDrawing] = useState(false);
   const [lastX, setLastX] = useState(0);
   const [lastY, setLastY] = useState(0);
@@ -50,15 +88,19 @@ const Whiteboard: React.FC = () => {
     setMode(value);
   };
 
-  // V1
   const startDrawing = (e: MouseEvent) => {
     console.log('start');
 
     setIsDrawing(true);
   };
 
+  const updateDrawKey = (e: ChangeEvent) => {
+    const newKey = (e.target as HTMLSelectElement).value as KeyType;
+    setDrawKey(newKey);
+  };
+
   const startDrawingByKey = (e: KeyboardEvent) => {
-    if (e.key == 'z') {
+    if (e.key == drawKey) {
       setIsDrawing(true);
     }
   };
@@ -126,8 +168,19 @@ const Whiteboard: React.FC = () => {
         canvas.removeEventListener('mouseout', finishDrawing);
       };
     }
-  }, [mode, canvasRef.current, isDrawing, lastX, lastY, history]);
+  }, [drawKey, mode, canvasRef.current, isDrawing, lastX, lastY, history]);
 
+  const selectDrawKey = mode == MODES.KeyBoard && (
+    <select
+      className={styles.ModeSelect}
+      onChange={updateDrawKey}
+      defaultValue={drawKey}
+    >
+      {Keys.map((key) => (
+        <option value={key}>{key.toUpperCase()}</option>
+      ))}
+    </select>
+  );
   return (
     <>
       <div className={styles.ToolBar}>
@@ -137,6 +190,7 @@ const Whiteboard: React.FC = () => {
             <option value={MODES.Mouse}>Mouse</option>
             <option value={MODES.KeyBoard}>KeyBoard</option>
           </select>
+          {selectDrawKey}
         </div>
 
         <button onClick={handleUndo}>Undo</button>
