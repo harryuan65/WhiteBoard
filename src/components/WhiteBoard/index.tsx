@@ -8,9 +8,15 @@ const Whiteboard: React.FC = () => {
   const [stroked, setStroked] = useState(0);
   const [history, setHistory] = useState<string[]>([]);
 
+  const handleReset = () => {
+    const canvas = canvasRef.current!;
+    const ctx = canvas.getContext('2d')!;
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    setHistory([]);
+  };
+
   const handleUndo = () => {
-    if (!canvasRef.current) return;
-    const canvas = canvasRef.current;
+    const canvas = canvasRef.current!;
     const ctx = canvas.getContext('2d')!;
 
     if (history.length > 0) {
@@ -105,24 +111,15 @@ const Whiteboard: React.FC = () => {
 
   return (
     <>
-      <button
-        onClick={() => {
-          handleUndo();
-        }}
-      >
-        Undo
-      </button>
       <table>
-        <thead>
-          <tr>
-            <th>histories</th>
-            <th>isDrawing</th>
-          </tr>
-        </thead>
         <tbody>
           <tr>
-            <td>{history.length}</td>
-            <td>{isDrawing ? 'true' : 'false'}</td>
+            <td>
+              <button onClick={handleUndo}>Undo</button>
+            </td>
+            <td>
+              <button onClick={handleReset}>Reset</button>
+            </td>
           </tr>
         </tbody>
       </table>
