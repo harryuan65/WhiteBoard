@@ -92,6 +92,11 @@ const Whiteboard: React.FC = () => {
     setStrokeWidth(Number(value));
   };
 
+  const updateStrokeStyle = (e: ChangeEvent) => {
+    const value = (e.target as HTMLInputElement).value;
+    setStrokeStyle(value);
+  };
+
   const updateMode = (e: ChangeEvent) => {
     const value = (e.target as HTMLSelectElement).value as DrawMode;
     setMode(value);
@@ -206,6 +211,14 @@ const Whiteboard: React.FC = () => {
             min={3}
             max={20}
             onChange={updateStrokeWidth}
+          />
+        </div>
+        <div className={styles.ModeSelectWrap}>
+          <span>Stroke Color: </span>
+          <input
+            type="color"
+            value={strokeStyle}
+            onChange={updateStrokeStyle}
           />
         </div>
         <Button onClick={handleUndo}>Undo</Button>
