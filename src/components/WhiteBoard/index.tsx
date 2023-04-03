@@ -225,7 +225,16 @@ const Whiteboard: React.FC = () => {
         canvas.removeEventListener('mouseout', finishDrawing);
       };
     }
-  }, [drawKey, mode, canvasRef.current, isDrawing, lastX, lastY]);
+  }, [
+    brushSize,
+    brushType,
+    drawKey,
+    mode,
+    canvasRef.current,
+    isDrawing,
+    lastX,
+    lastY,
+  ]);
 
   return (
     <>
