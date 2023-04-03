@@ -7,7 +7,7 @@
   font-weight: 400;
 
   color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
+  color: var(--element-accent-color);
   background-color: #242424;
 
   font-synthesis: none;
@@ -15,8 +15,6 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   -webkit-text-size-adjust: 100%;
-
-  --element-background-color: #1a1a1a;
 }
 
 a {
@@ -41,15 +39,23 @@ h1 {
   line-height: 1.1;
 }
 
+@media (prefers-color-scheme: dark) {
+  :root {
+    background-color: #242424;
+    --element-accent-color: #f9f9f9;
+    --element-border-color: #585858;
+    --element-background-color: #1a1a1a;
+  }
+}
+
 @media (prefers-color-scheme: light) {
   :root {
-    color: #213547;
     background-color: #ffffff;
+    --element-accent-color: #242424;
+    --element-border-color: #bebebe;
+    --element-background-color: #f9f9f9;
   }
   a:hover {
     color: #747bff;
-  }
-  button {
-    background-color: #f9f9f9;
   }
 }
