@@ -2,8 +2,8 @@ import React, { useState, useRef, useLayoutEffect, ChangeEvent } from 'react';
 import Button from '../Button';
 import SelectField from '../SelectField';
 import Tool from '../Tool';
-import { MODES, Keys } from '../constants';
-import { DrawMode, KeyType } from '../types';
+import { MODES, Keys, Brushes } from '../constants';
+import { DrawMode, KeyType, BrushType } from '../types';
 import styles from './styles.module.css';
 
 const DefaultStrokeColors = [
@@ -19,6 +19,8 @@ const DefaultStrokeColors = [
 const Whiteboard: React.FC = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [mode, setMode] = useState<DrawMode>('Mouse');
+  const [brushType, setBrushType] = useState<BrushType>('Stroke');
+  const [brushSize, setBrushSize] = useState<number>(3);
   const [drawKey, setDrawKey] = useState<KeyType>('z');
   const [isDrawing, setIsDrawing] = useState(false);
   const [lastX, setLastX] = useState(0);
@@ -71,10 +73,41 @@ const Whiteboard: React.FC = () => {
     setMode(value);
   };
 
-  const startDrawing = (e: MouseEvent) => {
-    console.log('start');
+  const strokeCircle = (x: number, y: number) => {
+    let canvas = canvasRef.current!;
+    let ctx = canvas.getContext('2d')!;
+    ctx.lineWidth = strokeWidth;
+    ctx.strokeStyle = strokeStyle;
+    ctx.lineCap = 'round';
+    ctx.beginPath();
+    ctx.arc(x, y, brushSize / 2, 0, 2 * Math.PI); // draws 2* desired width. So /2
+    ctx.stroke();
+    updateHistory();
+  };
 
-    setIsDrawing(true);
+  const strokeRect = (x: number, y: number) => {
+    let canvas = canvasRef.current!;
+    let ctx = canvas.getContext('2d')!;
+    ctx.lineWidth = strokeWidth;
+    ctx.strokeStyle = strokeStyle;
+    ctx.lineCap = 'round';
+    ctx.beginPath();
+    ctx.rect(x - brushSize / 2, y - brushSize / 2, brushSize, brushSize); // make cursor center
+    ctx.stroke();
+    updateHistory();
+  };
+
+  const startDrawing = (e: MouseEvent) => {
+    switch (brushType) {
+      case 'Circle':
+        strokeCircle(e.offsetX, e.offsetY);
+        break;
+      case 'Rect':
+        strokeRect(e.offsetX, e.offsetY);
+        break;
+      default:
+        setIsDrawing(true);
+    }
   };
 
   const updateDrawKey = (e: ChangeEvent) => {
@@ -84,7 +117,16 @@ const Whiteboard: React.FC = () => {
 
   const startDrawingByKey = (e: KeyboardEvent) => {
     if (e.key == drawKey) {
-      setIsDrawing(true);
+      switch (brushType) {
+        case 'Circle':
+          strokeCircle(lastX, lastY);
+          break;
+        case 'Rect':
+          strokeRect(lastX, lastY);
+          break;
+        default:
+          setIsDrawing(true);
+      }
     }
   };
 
@@ -111,10 +153,13 @@ const Whiteboard: React.FC = () => {
   const finishDrawing = (e: MouseEvent | KeyboardEvent) => {
     setIsDrawing(false);
 
-    if (stroked > 0) setHistory([...history, canvasRef.current!.toDataURL()]);
+    if (stroked > 0) updateHistory();
 
     setStroked(0);
   };
+
+  const updateHistory = () =>
+    setHistory([...history, canvasRef.current!.toDataURL()]);
 
   useLayoutEffect(() => {
     if (canvasRef.current) {
@@ -179,6 +224,28 @@ const Whiteboard: React.FC = () => {
             max={20}
             onChange={updateStrokeWidth}
           />
+        </Tool>
+        <Tool title="Brush">
+          {Brushes.map((brush) => (
+            <span
+              className={[
+                styles[brush],
+                styles.Brush,
+                brushType == brush && styles.selected,
+              ].join(' ')}
+              onClick={() => setBrushType(brush)}
+            ></span>
+          ))}
+          {brushType != 'Stroke' && (
+            <input
+              type="range"
+              min={20}
+              max={100}
+              onChange={(e) =>
+                setBrushSize(Number((e.target as HTMLInputElement).value))
+              }
+            />
+          )}
         </Tool>
         <Tool title="Stroke Color">
           {DefaultStrokeColors.map((color) => (

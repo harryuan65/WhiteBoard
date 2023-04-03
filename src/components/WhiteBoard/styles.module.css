@@ -17,3 +17,54 @@
 .DefaultStrokeColorOption.selected {
   border: 2px solid rgb(199, 199, 199);
 }
+
+.Brush {
+  display: inline-block;
+  width: 24px;
+  height: 24px;
+
+  /* for pseudo */
+  position: relative;
+}
+
+.Brush.Stroke::before {
+  content: '';
+  width: 8px;
+  height: 8px;
+  background-color: white;
+  border-radius: 50%;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.Brush.Circle::before {
+  content: '\25CB';
+  position: absolute;
+  border-radius: 50%;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.Brush.Rect::before {
+  content: '\25a1';
+  border-radius: 50%;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.Brush.selected::after {
+  content: '\2714';
+  display: inline-block;
+  position: absolute;
+  color: rgb(1, 183, 1);
+  font-size: medium;
+  font-weight: bold;
+  top: 50%;
+  left: 50%;
+  transform: translate(-35%, -35%);
+}
