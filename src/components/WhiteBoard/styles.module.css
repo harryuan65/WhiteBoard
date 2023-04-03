@@ -57,6 +57,16 @@
   transform: translate(-50%, -50%);
 }
 
+.Brush.Arrow::before {
+  content: '→';
+  color: white;
+  border-radius: 50%;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
 .Brush.selected::after {
   content: '\2714';
   display: inline-block;

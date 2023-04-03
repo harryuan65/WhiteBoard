@@ -20,14 +20,14 @@ const Whiteboard: React.FC = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [mode, setMode] = useState<DrawMode>('Mouse');
   const [brushType, setBrushType] = useState<BrushType>('Stroke');
-  const [brushSize, setBrushSize] = useState<number>(3);
+  const [brushSize, setBrushSize] = useState<number>(40);
   const [drawKey, setDrawKey] = useState<KeyType>('z');
   const [isDrawing, setIsDrawing] = useState(false);
   const [lastX, setLastX] = useState(0);
   const [lastY, setLastY] = useState(0);
   const [stroked, setStroked] = useState(0);
   const [strokeWidth, setStrokeWidth] = useState<number>(3);
-  const [strokeStyle, setStrokeStyle] = useState<string>('000000');
+  const [strokeStyle, setStrokeStyle] = useState<string>('#000000');
   const [history, setHistory] = useState<string[]>([]);
 
   const handleReset = () => {
@@ -97,6 +97,31 @@ const Whiteboard: React.FC = () => {
     updateHistory();
   };
 
+  const strokeArrow = (x: number, y: number) => {
+    let canvas = canvasRef.current!;
+    let ctx = canvas.getContext('2d')!;
+    ctx.lineWidth = strokeWidth;
+    ctx.strokeStyle = strokeStyle;
+    ctx.lineCap = 'round';
+    // center + 2x brushSize ->
+    ctx.beginPath();
+    ctx.moveTo(x, y);
+    ctx.lineTo(x + 2 * brushSize, y);
+    ctx.stroke();
+    // ---->  go 1/2 left <-- and up  ^--
+    ctx.beginPath();
+    ctx.moveTo(x + 2 * brushSize, y);
+    ctx.lineTo(x + 2 * brushSize - brushSize / 2, y - brushSize / 2);
+    ctx.stroke();
+
+    // ---->  go 1/2 left <-- and down  ^--
+    ctx.beginPath();
+    ctx.moveTo(x + 2 * brushSize, y);
+    ctx.lineTo(x + 2 * brushSize - brushSize / 2, y + brushSize / 2); // y down
+    ctx.stroke();
+    updateHistory();
+  };
+
   const startDrawing = (e: MouseEvent) => {
     switch (brushType) {
       case 'Circle':
@@ -104,6 +129,9 @@ const Whiteboard: React.FC = () => {
         break;
       case 'Rect':
         strokeRect(e.offsetX, e.offsetY);
+        break;
+      case 'Arrow':
+        strokeArrow(e.offsetX, e.offsetY);
         break;
       default:
         setIsDrawing(true);
@@ -236,11 +264,13 @@ const Whiteboard: React.FC = () => {
               onClick={() => setBrushType(brush)}
             ></span>
           ))}
+          {brushType != 'Stroke' && brushSize}
           {brushType != 'Stroke' && (
             <input
               type="range"
               min={20}
-              max={100}
+              max={200}
+              value={brushSize}
               onChange={(e) =>
                 setBrushSize(Number((e.target as HTMLInputElement).value))
               }
