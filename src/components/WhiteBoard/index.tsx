@@ -73,21 +73,6 @@ const Whiteboard: React.FC = () => {
     }
   };
 
-  const updateStrokeWidth = (e: ChangeEvent) => {
-    const value = (e.target as HTMLInputElement).value;
-    setStrokeWidth(Number(value));
-  };
-
-  const updateStrokeStyle = (e: ChangeEvent) => {
-    const value = (e.target as HTMLInputElement).value;
-    setStrokeStyle(value);
-  };
-
-  const updateMode = (e: ChangeEvent) => {
-    const value = (e.target as HTMLSelectElement).value as DrawMode;
-    setMode(value);
-  };
-
   const strokeCircle = (x: number, y: number) => {
     let ctx = getCurrentCtx();
     ctx.beginPath();
@@ -284,7 +269,9 @@ const Whiteboard: React.FC = () => {
       <div className={styles.ToolBar}>
         <Tool title="Draw Mode">
           <SelectField
-            onChange={updateMode}
+            onChange={(e) =>
+              setMode((e.target as HTMLSelectElement).value as DrawMode)
+            }
             values={[MODES.Mouse, MODES.KeyBoard]}
             defaultValue={mode}
           />
@@ -302,7 +289,9 @@ const Whiteboard: React.FC = () => {
             value={strokeWidth}
             min={3}
             max={20}
-            onChange={updateStrokeWidth}
+            onChange={(e) =>
+              setStrokeWidth(Number((e.target as HTMLInputElement).value))
+            }
           />
         </Tool>
         <Tool title="Brush">
@@ -343,7 +332,9 @@ const Whiteboard: React.FC = () => {
           <input
             type="color"
             value={strokeStyle}
-            onChange={updateStrokeStyle}
+            onChange={(e) =>
+              setStrokeStyle((e.target as HTMLInputElement).value)
+            }
           />
         </Tool>
         <Button onClick={handleUndo}>Undo</Button>
