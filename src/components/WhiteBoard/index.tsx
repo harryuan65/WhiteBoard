@@ -26,6 +26,7 @@ const Whiteboard: React.FC = () => {
   ).matches
     ? ['#ffffff', '#000000']
     : ['#000000', '#ffffff'];
+  const [initialized, setInitialized] = useState(false);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [mode, setMode] = useState<DrawMode>('Mouse');
   const [brushType, setBrushType] = useState<BrushType>('Stroke');
@@ -47,6 +48,7 @@ const Whiteboard: React.FC = () => {
     ctx.lineWidth = strokeWidth;
     ctx.strokeStyle = strokeStyle;
     ctx.lineCap = 'round';
+    ctx.fillStyle = defaultSchemeStrokeColors[1];
     return ctx;
   }, [canvasRef, strokeWidth, strokeStyle]);
 
@@ -56,7 +58,7 @@ const Whiteboard: React.FC = () => {
     }
     const canvas = canvasRef.current!;
     const ctx = canvas.getContext('2d')!;
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
     setHistory([]);
   };
 
@@ -240,11 +242,40 @@ const Whiteboard: React.FC = () => {
     }
   };
 
+  const copyImage = () => {
+    const canvas = canvasRef.current!;
+    const ctx = canvas.getContext('2d')!;
+    ctx.fillStyle = '#242424';
+    const img = new Image();
+    img.src = canvas.toDataURL('image/png');
+
+    img.onload = function () {
+      canvas.toBlob(function (blob) {
+        console.log(blob);
+
+        const item = new ClipboardItem({ 'image/png': blob! });
+        navigator.clipboard
+          .write([item])
+          .then(() => {
+            console.log('圖像已成功複製到剪貼板中');
+          })
+          .catch((e) => {
+            console.error('複製到剪貼板時出現錯誤: ', e);
+          });
+      });
+    };
+  };
   useLayoutEffect(() => {
     if (canvasRef.current) {
       canvasRef.current.focus();
       const canvas = canvasRef.current;
+      const ctx = canvas.getContext('2d')!;
+      ctx.fillStyle = defaultSchemeStrokeColors[1];
 
+      if (!initialized) {
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        setInitialized(true);
+      }
       switch (mode) {
         case MODES.Mouse:
           canvas.addEventListener('mousedown', startDrawing);
@@ -363,6 +394,7 @@ const Whiteboard: React.FC = () => {
         </Tool>
         <Button onClick={handleUndo}>Undo</Button>
         <Button onClick={handleReset}>Reset</Button>
+        <Button onClick={copyImage}>Copy Image</Button>
       </div>
       {/* autoFocus + tabIndex to allow focus */}
       <canvas

@@ -8,7 +8,6 @@
 
   color-scheme: light dark;
   color: var(--element-accent-color);
-  background-color: var(--canvas-background-color);
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;

@@ -1,5 +1,4 @@
 .WhiteBoard {
-  background-color: var(--canvas-background-color);
   display: block;
   margin: auto;
   outline: none;
@@ -11,6 +10,9 @@
   position: fixed;
   top: 0;
   gap: 2px;
+
+  width: 500px;
+  flex-wrap: wrap;
 }
 
 .DefaultStrokeColorOption {
