@@ -193,7 +193,6 @@ const Whiteboard: React.FC = () => {
     if (canvasRef.current) {
       canvasRef.current.focus();
       const canvas = canvasRef.current;
-      const ctx = canvas.getContext('2d')!;
 
       switch (mode) {
         case MODES.Mouse:
