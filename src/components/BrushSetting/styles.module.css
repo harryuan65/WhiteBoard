@@ -1,0 +1,79 @@
+.BrushSetting {
+  position: relative;
+  padding: 0.6em 1.2em;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  border: 1px solid var(--element-border-color);
+  background-color: var(--element-background-color);
+}
+
+.Row {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+}
+
+.Column {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.Brush {
+  display: inline-block;
+  width: 24px;
+  height: 24px;
+
+  /* for pseudo */
+  position: relative;
+}
+
+.Brush::before {
+  border-radius: 50%;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.Brush.Stroke::before {
+  content: '';
+  width: 8px;
+  height: 8px;
+  background-color: var(--element-accent-color);
+}
+
+.Brush.Circle::before {
+  content: '\25CB';
+}
+
+.Brush.Rect::before {
+  content: '\25a1';
+}
+
+.Brush.Arrow::before {
+  content: '→';
+  color: var(--element-accent-color);
+}
+
+.Brush.ListNode::before {
+  content: '\25CB→';
+  font-size: x-small;
+  color: var(--element-accent-color);
+}
+
+.Brush.selected::after {
+  content: '\2714';
+  display: inline-block;
+  position: absolute;
+  color: rgb(1, 183, 1);
+  font-size: medium;
+  font-weight: bold;
+  top: 50%;
+  left: 50%;
+  transform: translate(-35%, -35%);
+}

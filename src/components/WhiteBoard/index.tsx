@@ -11,6 +11,7 @@ import Tool from '../Tool';
 import { MODES, Keys, Brushes } from '../constants';
 import { DrawMode, KeyType, BrushType } from '../types';
 import styles from './styles.module.css';
+import BrushSetting from '../BrushSetting';
 
 const DefaultStrokeColors = [
   '#D92027',
@@ -347,30 +348,14 @@ const Whiteboard: React.FC = () => {
             }
           />
         </Tool>
-        <Tool title="Brush">
-          {Brushes.map((brush) => (
-            <span
-              className={[
-                styles[brush],
-                styles.Brush,
-                brushType == brush && styles.selected,
-              ].join(' ')}
-              onClick={() => setBrushType(brush)}
-            ></span>
-          ))}
-          {brushType != 'Stroke' && brushSize}
-          {brushType != 'Stroke' && (
-            <input
-              type="range"
-              min={20}
-              max={200}
-              value={brushSize}
-              onChange={(e) =>
-                setBrushSize(Number((e.target as HTMLInputElement).value))
-              }
-            />
-          )}
-        </Tool>
+        <BrushSetting
+          currentBrushSize={brushSize}
+          currentBrushType={brushType}
+          setBrushType={setBrushType}
+          onChangeBrushSize={(e) =>
+            setBrushSize(Number((e.target as HTMLInputElement).value))
+          }
+        />
         <Tool title="Stroke Color">
           {[...defaultSchemeStrokeColors, ...DefaultStrokeColors].map(
             (color) => (
