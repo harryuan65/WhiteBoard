@@ -46,6 +46,9 @@ const Whiteboard: React.FC = () => {
   }, [canvasRef, strokeWidth, strokeStyle]);
 
   const handleReset = () => {
+    if (!confirm('Are you sure you want to reset?')) {
+      return;
+    }
     const canvas = canvasRef.current!;
     const ctx = canvas.getContext('2d')!;
     ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -217,6 +220,20 @@ const Whiteboard: React.FC = () => {
 
   const updateHistory = () =>
     setHistory([...history, canvasRef.current!.toDataURL()]);
+
+  useLayoutEffect(() => {
+    window.addEventListener('beforeunload', handleBeforeUnload);
+    return () => {
+      window.removeEventListener('beforeunload', handleBeforeUnload);
+    };
+  }, [history]);
+
+  const handleBeforeUnload = (event: BeforeUnloadEvent) => {
+    if (history.length > 0) {
+      event.preventDefault();
+      event.returnValue = '';
+    }
+  };
 
   useLayoutEffect(() => {
     if (canvasRef.current) {
