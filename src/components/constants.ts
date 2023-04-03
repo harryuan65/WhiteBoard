@@ -32,4 +32,10 @@ export const Keys = [
   'm',
 ] as const;
 
-export const Brushes = ['Stroke', 'Circle', 'Rect', 'Arrow'] as const;
+export const Brushes = [
+  'Stroke',
+  'Circle',
+  'Rect',
+  'Arrow',
+  'ListNode',
+] as const;

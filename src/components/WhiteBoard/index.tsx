@@ -97,6 +97,45 @@ const Whiteboard: React.FC = () => {
     updateHistory();
   };
 
+  const strokeListNode = (x: number, y: number) => {
+    let canvas = canvasRef.current!;
+    let ctx = canvas.getContext('2d')!;
+    ctx.lineWidth = strokeWidth;
+    ctx.strokeStyle = strokeStyle;
+    ctx.lineCap = 'round';
+
+    let circleWidth = brushSize / 2; // draws 2* desired width. So /2
+
+    ctx.beginPath();
+    ctx.arc(x, y, circleWidth, 0, 2 * Math.PI);
+    ctx.stroke();
+
+    // center + 2x brushSize ->
+    let arrowStartPoint = x + circleWidth;
+    ctx.beginPath();
+    ctx.moveTo(arrowStartPoint, y);
+    ctx.lineTo(arrowStartPoint + 2 * circleWidth, y);
+    ctx.stroke();
+    // ---->  go 1/2 left <-- and up  ^--
+    ctx.beginPath();
+    ctx.moveTo(arrowStartPoint + 2 * circleWidth, y);
+    ctx.lineTo(
+      arrowStartPoint + 2 * circleWidth - circleWidth / 2,
+      y - circleWidth / 2
+    );
+    ctx.stroke();
+
+    // ---->  go 1/2 left <-- and down  ^--
+    ctx.beginPath();
+    ctx.moveTo(arrowStartPoint + 2 * circleWidth, y);
+    ctx.lineTo(
+      arrowStartPoint + 2 * circleWidth - circleWidth / 2,
+      y + circleWidth / 2
+    ); // y down
+    ctx.stroke();
+    updateHistory();
+  };
+
   const strokeArrow = (x: number, y: number) => {
     let canvas = canvasRef.current!;
     let ctx = canvas.getContext('2d')!;
@@ -132,6 +171,9 @@ const Whiteboard: React.FC = () => {
         break;
       case 'Arrow':
         strokeArrow(e.offsetX, e.offsetY);
+        break;
+      case 'ListNode':
+        strokeListNode(e.offsetX, e.offsetY);
         break;
       default:
         setIsDrawing(true);

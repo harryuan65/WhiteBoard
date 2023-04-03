@@ -55,6 +55,12 @@
   color: white;
 }
 
+.Brush.ListNode::before {
+  content: '\25CB→';
+  font-size: x-small;
+  color: white;
+}
+
 .Brush.selected::after {
   content: '\2714';
   display: inline-block;
