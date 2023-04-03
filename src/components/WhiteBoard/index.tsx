@@ -194,6 +194,12 @@ const Whiteboard: React.FC = () => {
         case 'Rect':
           strokeRect(lastX, lastY);
           break;
+        case 'Arrow':
+          strokeArrow(lastX, lastY);
+          break;
+        case 'ListNode':
+          strokeListNode(lastX, lastY);
+          break;
         default:
           setIsDrawing(true);
       }
