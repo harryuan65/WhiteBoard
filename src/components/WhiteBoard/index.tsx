@@ -1,4 +1,10 @@
-import React, { useState, useRef, useLayoutEffect, ChangeEvent } from 'react';
+import React, {
+  useState,
+  useRef,
+  useLayoutEffect,
+  ChangeEvent,
+  useCallback,
+} from 'react';
 import Button from '../Button';
 import SelectField from '../SelectField';
 import Tool from '../Tool';
@@ -29,6 +35,15 @@ const Whiteboard: React.FC = () => {
   const [strokeWidth, setStrokeWidth] = useState<number>(3);
   const [strokeStyle, setStrokeStyle] = useState<string>('#000000');
   const [history, setHistory] = useState<string[]>([]);
+
+  const getCurrentCtx = useCallback(() => {
+    let canvas = canvasRef.current!;
+    let ctx = canvas.getContext('2d')!;
+    ctx.lineWidth = strokeWidth;
+    ctx.strokeStyle = strokeStyle;
+    ctx.lineCap = 'round';
+    return ctx;
+  }, [canvasRef, strokeWidth, strokeStyle]);
 
   const handleReset = () => {
     const canvas = canvasRef.current!;
@@ -74,11 +89,7 @@ const Whiteboard: React.FC = () => {
   };
 
   const strokeCircle = (x: number, y: number) => {
-    let canvas = canvasRef.current!;
-    let ctx = canvas.getContext('2d')!;
-    ctx.lineWidth = strokeWidth;
-    ctx.strokeStyle = strokeStyle;
-    ctx.lineCap = 'round';
+    let ctx = getCurrentCtx();
     ctx.beginPath();
     ctx.arc(x, y, brushSize / 2, 0, 2 * Math.PI); // draws 2* desired width. So /2
     ctx.stroke();
@@ -86,11 +97,7 @@ const Whiteboard: React.FC = () => {
   };
 
   const strokeRect = (x: number, y: number) => {
-    let canvas = canvasRef.current!;
-    let ctx = canvas.getContext('2d')!;
-    ctx.lineWidth = strokeWidth;
-    ctx.strokeStyle = strokeStyle;
-    ctx.lineCap = 'round';
+    let ctx = getCurrentCtx();
     ctx.beginPath();
     ctx.rect(x - brushSize / 2, y - brushSize / 2, brushSize, brushSize); // make cursor center
     ctx.stroke();
@@ -98,11 +105,7 @@ const Whiteboard: React.FC = () => {
   };
 
   const strokeListNode = (x: number, y: number) => {
-    let canvas = canvasRef.current!;
-    let ctx = canvas.getContext('2d')!;
-    ctx.lineWidth = strokeWidth;
-    ctx.strokeStyle = strokeStyle;
-    ctx.lineCap = 'round';
+    let ctx = getCurrentCtx();
 
     let circleWidth = brushSize / 2; // draws 2* desired width. So /2
 
@@ -137,11 +140,7 @@ const Whiteboard: React.FC = () => {
   };
 
   const strokeArrow = (x: number, y: number) => {
-    let canvas = canvasRef.current!;
-    let ctx = canvas.getContext('2d')!;
-    ctx.lineWidth = strokeWidth;
-    ctx.strokeStyle = strokeStyle;
-    ctx.lineCap = 'round';
+    let ctx = getCurrentCtx();
     // center + 2x brushSize ->
     ctx.beginPath();
     ctx.moveTo(x, y);
@@ -208,11 +207,8 @@ const Whiteboard: React.FC = () => {
 
   const draw = (e: MouseEvent) => {
     if (isDrawing && canvasRef.current) {
-      const ctx = canvasRef.current.getContext('2d')!;
+      let ctx = getCurrentCtx();
       ctx.beginPath();
-      ctx.lineWidth = strokeWidth;
-      ctx.strokeStyle = strokeStyle;
-      ctx.lineCap = 'round';
       ctx.moveTo(lastX, lastY);
       ctx.lineTo(e.offsetX, e.offsetY);
       ctx.stroke();
