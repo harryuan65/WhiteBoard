@@ -17,7 +17,7 @@ const DefaultStrokeColors = [
   '#ffffff',
   '#D92027',
   '#3a9505',
-  '#002c59',
+  '#1a82ea',
   '#F49D1A',
   '#5f14eb',
 ];
