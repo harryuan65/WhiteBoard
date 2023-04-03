@@ -1,3 +1,10 @@
+.WhiteBoard {
+  background-color: white;
+  display: block;
+  margin: auto;
+  outline: none;
+}
+
 .ToolBar {
   display: flex;
   align-items: center;

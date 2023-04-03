@@ -362,12 +362,7 @@ const Whiteboard: React.FC = () => {
         ref={canvasRef}
         tabIndex={1}
         autoFocus
-        style={{
-          backgroundColor: 'white',
-          display: 'block',
-          margin: 'auto',
-          border: '1px solid black',
-        }}
+        className={styles.WhiteBoard}
         width={window.innerWidth}
         height={window.innerHeight}
       ></canvas>
