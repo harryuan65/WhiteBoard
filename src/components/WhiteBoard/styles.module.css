@@ -10,9 +10,6 @@
   position: fixed;
   top: 0;
   gap: 2px;
-
-  width: 500px;
-  flex-wrap: wrap;
 }
 
 .DefaultStrokeColorOption {
