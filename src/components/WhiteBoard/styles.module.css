@@ -1,5 +1,5 @@
 .WhiteBoard {
-  background-color: white;
+  background-color: var(--canvas-background-color);
   display: block;
   margin: auto;
   outline: none;

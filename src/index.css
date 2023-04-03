@@ -8,7 +8,7 @@
 
   color-scheme: light dark;
   color: var(--element-accent-color);
-  background-color: #242424;
+  background-color: var(--canvas-background-color);
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -41,7 +41,7 @@ h1 {
 
 @media (prefers-color-scheme: dark) {
   :root {
-    background-color: #242424;
+    --canvas-background-color: #242424;
     --element-accent-color: #f9f9f9;
     --element-border-color: #585858;
     --element-background-color: #1a1a1a;
@@ -50,7 +50,7 @@ h1 {
 
 @media (prefers-color-scheme: light) {
   :root {
-    background-color: #ffffff;
+    --canvas-background-color: #ffffff;
     --element-accent-color: #242424;
     --element-border-color: #bebebe;
     --element-background-color: #f9f9f9;

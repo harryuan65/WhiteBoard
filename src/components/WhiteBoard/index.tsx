@@ -13,8 +13,6 @@ import { DrawMode, KeyType, BrushType } from '../types';
 import styles from './styles.module.css';
 
 const DefaultStrokeColors = [
-  '#000000',
-  '#ffffff',
   '#D92027',
   '#3a9505',
   '#1a82ea',
@@ -23,6 +21,11 @@ const DefaultStrokeColors = [
 ];
 
 const Whiteboard: React.FC = () => {
+  const defaultSchemeStrokeColors = window.matchMedia(
+    '(prefers-color-scheme: dark)'
+  ).matches
+    ? ['#ffffff', '#000000']
+    : ['#000000', '#ffffff'];
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [mode, setMode] = useState<DrawMode>('Mouse');
   const [brushType, setBrushType] = useState<BrushType>('Stroke');
@@ -33,7 +36,9 @@ const Whiteboard: React.FC = () => {
   const [lastY, setLastY] = useState(0);
   const [stroked, setStroked] = useState(0);
   const [strokeWidth, setStrokeWidth] = useState<number>(3);
-  const [strokeStyle, setStrokeStyle] = useState<string>('#000000');
+  const [strokeStyle, setStrokeStyle] = useState<string>(
+    defaultSchemeStrokeColors[0]
+  );
   const [history, setHistory] = useState<string[]>([]);
 
   const getCurrentCtx = useCallback(() => {
@@ -336,16 +341,18 @@ const Whiteboard: React.FC = () => {
           )}
         </Tool>
         <Tool title="Stroke Color">
-          {DefaultStrokeColors.map((color) => (
-            <span
-              className={[
-                styles.DefaultStrokeColorOption,
-                strokeStyle === color && styles.selected,
-              ].join(' ')}
-              style={{ '--color': color } as React.CSSProperties}
-              onClick={() => setStrokeStyle(color)}
-            ></span>
-          ))}
+          {[...defaultSchemeStrokeColors, ...DefaultStrokeColors].map(
+            (color) => (
+              <span
+                className={[
+                  styles.DefaultStrokeColorOption,
+                  strokeStyle === color && styles.selected,
+                ].join(' ')}
+                style={{ '--color': color } as React.CSSProperties}
+                onClick={() => setStrokeStyle(color)}
+              ></span>
+            )
+          )}
           <input
             type="color"
             value={strokeStyle}
