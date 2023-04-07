@@ -7,8 +7,8 @@
 - I want to learn canvas(without any 3rd party packages)
 - I want to quickly draw my ideas for discussions
 - I want to try drawing with keyboard
-- I want to quickily copy what I've drawn and send it to friends via Discord/Line.
-- I want to quickily draw custom shapes(like list node, for now)
+- I want to quickly copy what I've drawn and send it to friends via Discord/Line.
+- I want to quickly draw custom shapes(like list node, for now)
 
 ## ENV
 
